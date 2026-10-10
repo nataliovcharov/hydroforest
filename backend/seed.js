@@ -1,10 +1,20 @@
+// Fills the database with demo trees and users. Deletes all existing users and trees first.
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const User = require('./database/User');
 const Tree = require('./database/Tree');
 
+// Demo accounts all use this password. They are for local development only.
+const DEMO_PASSWORD = 'test123';
+
 async function seedDatabase() {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('Refusing to seed: this deletes every user, and NODE_ENV is production.');
+    process.exit(1);
+  }
+
   await mongoose.connect(process.env.MONGO_URI);
   console.log('✅ Connected to MongoDB');
 
@@ -43,59 +53,22 @@ async function seedDatabase() {
         sapling: '/images/tree3/sapling.png',
         adultTree: '/images/tree3/adult_tree.png'
       }
-    },
-    {
-      name: 'Blooming Berry',
-      stages: {
-        seed: '/images/tree4/seed.png',
-        sprout: '/images/tree4/sprout.png',
-        seedling: '/images/tree4/seedling.png',
-        sapling: '/images/tree4/sapling.png',
-        adultTree: '/images/plants1.png'
-      }
-    },
-    {
-      name: 'Sunleaf',
-      stages: {
-        seed: '/images/tree5/seed.png',
-        sprout: '/images/tree5/sprout.png',
-        seedling: '/images/tree5/seedling.png',
-        sapling: '/images/tree5/sapling.png',
-        adultTree: '/images/plants2.png'
-      }
-    },
-    {
-      name: 'Aqua Fern',
-      stages: {
-        seed: '/images/tree6/seed.png',
-        sprout: '/images/tree6/sprout.png',
-        seedling: '/images/tree6/seedling.png',
-        sapling: '/images/tree6/sapling.png',
-        adultTree: '/images/plants3.png'
-      }
-    },
-    {
-      name: 'Hydro Cactus',
-      stages: {
-        seed: '/images/tree7/seed.png',
-        sprout: '/images/tree7/sprout.png',
-        seedling: '/images/tree7/seedling.png',
-        sapling: '/images/tree7/sapling.png',
-        adultTree: '/images/plants4.png'
-      }
     }
   ]);
   console.log('🌱 Trees seeded');
+
+  // Only the first three trees have images for every growth stage.
+  const password = await bcrypt.hash(DEMO_PASSWORD, 10);
 
   // Insert users and store their references
   const [alice, bob, charlie, mark] = await User.insertMany([
     {
       username: 'alice',
-      password: 'test123',
+      password,
       email: 'alice@example.com',
       hydrationData: [],
       hasUnlockedTree: true,
-      unlockableTrees: ['Misty Bonsai', 'Golden Sun'],
+      unlockableTrees: ['Misty Bonsai', 'Sunflower', 'Golden Sun'],
       plantLevel: 3,
       longestStreak: 7,
       currentStreak: 2,
@@ -105,13 +78,13 @@ async function seedDatabase() {
     },
     {
       username: 'bob',
-      password: 'test123',
+      password,
       email: 'bob@example.com',
       hydrationData: [
         { date: new Date(), amount: 500, unlockedPlant: 'Sunflower' }
       ],
       hasUnlockedTree: false,
-      unlockableTrees: ['Sunflower'],
+      unlockableTrees: ['Misty Bonsai', 'Sunflower', 'Golden Sun'],
       plantLevel: 2,
       longestStreak: 5,
       currentStreak: 5,
@@ -121,11 +94,11 @@ async function seedDatabase() {
     },
     {
       username: 'charlie',
-      password: 'test123',
+      password,
       email: 'charlie@example.com',
       hydrationData: [],
       hasUnlockedTree: false,
-      unlockableTrees: [],
+      unlockableTrees: ['Misty Bonsai', 'Sunflower', 'Golden Sun'],
       plantLevel: 1,
       longestStreak: 2,
       currentStreak: 1,
@@ -135,11 +108,11 @@ async function seedDatabase() {
     },
     {
       username: 'mark',
-      password: 'test153',
+      password,
       email: 'mark@example.com',
       hydrationData: [],
       hasUnlockedTree: false,
-      unlockableTrees: [],
+      unlockableTrees: ['Misty Bonsai', 'Sunflower', 'Golden Sun'],
       plantLevel: 1,
       longestStreak: 3,
       currentStreak: 1,
@@ -162,8 +135,11 @@ async function seedDatabase() {
   await mark.save();
 
   console.log('👥 Friendships established');
-  mongoose.connection.close();
-  console.log('✅ Database seed complete!');
+  await mongoose.connection.close();
+  console.log(`✅ Database seed complete! Log in as alice, bob, charlie or mark with password "${DEMO_PASSWORD}".`);
 }
 
-seedDatabase();
+seedDatabase().catch((err) => {
+  console.error('Seeding failed:', err.message);
+  process.exit(1);
+});

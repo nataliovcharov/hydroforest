@@ -1,118 +1,111 @@
 const express = require('express');
-const router = express.Router();
 const passport = require('passport');
-const User = require('../database/User');
 const { body, query, validationResult } = require('express-validator');
+const User = require('../database/User');
+
+const router = express.Router();
+
+// Only these fields of other users are ever sent to the client.
+const PUBLIC_FIELDS = '_id username totalWaterLogged';
+const MAX_SUGGESTIONS = 10;
+
+const authenticate = passport.authenticate('jwt', { session: false });
+
+function rejectInvalid(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: errors.array()[0].msg, errors: errors.array() });
+  }
+  next();
+}
+
+// Treat the search text literally, so characters like "." or "*" don't act as a regex.
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const friendIdRule = body('friendId').isMongoId().withMessage('friendId must be a valid user id');
 
 // GET all friends for the authenticated user
-router.get('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate('friends', 'username totalWaterLogged');
+    const user = await User.findById(req.user.id).populate('friends', PUBLIC_FIELDS);
     if (!user) return res.status(404).json({ error: 'User not found' });
-
     res.json({ friends: user.friends });
   } catch (err) {
+    console.error('Friends error:', err);
     res.status(500).json({ error: 'Failed to fetch friends.' });
   }
 });
 
-// GET friend suggestions based on query
+// GET people to add, matching the search text. Excludes yourself and existing friends.
 router.get(
   '/suggestions',
-  passport.authenticate('jwt', { session: false }),
+  authenticate,
   [
     query('q')
       .optional()
       .isString()
       .isLength({ max: 20 })
-      .withMessage('Query must be a string no longer than 20 characters')
+      .withMessage('Query must be a string no longer than 20 characters'),
   ],
+  rejectInvalid,
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
     try {
-      const query = req.query.q?.toLowerCase() || '';
-      const user = await User.findById(req.user.id);
+      const user = await User.findById(req.user.id).select('friends');
       if (!user) return res.status(404).json({ error: 'User not found' });
 
-      const allUsers = await User.find({ _id: { $ne: user._id } });
+      const text = (req.query.q || '').trim();
+      const suggestions = await User.find({
+        _id: { $nin: [user._id, ...user.friends] },
+        username: { $regex: escapeRegex(text), $options: 'i' },
+      })
+        .select(PUBLIC_FIELDS)
+        .sort({ username: 1 })
+        .limit(MAX_SUGGESTIONS)
+        .lean();
 
-      const suggestions = allUsers.filter(u =>
-        u.username.toLowerCase().includes(query) &&
-        !user.friends.includes(u._id)
-      );
       if (suggestions.length === 0) {
         return res.json({ suggestions: [], message: 'No Users Found' });
       }
       res.json({ suggestions });
     } catch (err) {
+      console.error('Suggestions error:', err);
       res.status(500).json({ error: 'Failed to fetch suggestions.' });
     }
   }
 );
 
 // POST to add a friend
-router.post(
-  '/add',
-  passport.authenticate('jwt', { session: false }),
-  [
-    body('friendId')
-      .isString()
-      .withMessage('friendId is required and must be a string')
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+router.post('/add', authenticate, [friendIdRule], rejectInvalid, async (req, res) => {
+  const { friendId } = req.body;
 
-    const { friendId } = req.body;
-
-    try {
-      const user = await User.findById(req.user.id);
-      const friend = await User.findById(friendId);
-
-      if (!user || !friend) return res.status(404).json({ error: 'User or friend not found' });
-
-      if (!user.friends.includes(friend._id)) {
-        user.friends.push(friend._id);
-        await user.save();
-      }
-
-      res.json({ success: true, message: 'Friend added.' });
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to add friend.' });
-    }
+  if (friendId === String(req.user._id)) {
+    return res.status(400).json({ error: "You can't add yourself as a friend." });
   }
-);
+
+  try {
+    if (!(await User.exists({ _id: friendId }))) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // $addToSet never adds the same friend twice.
+    await User.updateOne({ _id: req.user._id }, { $addToSet: { friends: friendId } });
+    res.json({ success: true, message: 'Friend added.' });
+  } catch (err) {
+    console.error('Add friend error:', err);
+    res.status(500).json({ error: 'Failed to add friend.' });
+  }
+});
 
 // POST to remove a friend
-router.post(
-  '/remove',
-  passport.authenticate('jwt', { session: false }),
-  [
-    body('friendId')
-      .isString()
-      .withMessage('friendId is required and must be a string')
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    const { friendId } = req.body;
-
-    try {
-      const user = await User.findById(req.user.id);
-      if (!user) return res.status(404).json({ error: 'User not found' });
-
-      user.friends = user.friends.filter(fId => fId.toString() !== friendId);
-      await user.save();
-
-      res.json({ success: true, message: 'Friend removed.' });
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to remove friend.' });
-    }
+router.post('/remove', authenticate, [friendIdRule], rejectInvalid, async (req, res) => {
+  try {
+    await User.updateOne({ _id: req.user._id }, { $pull: { friends: req.body.friendId } });
+    res.json({ success: true, message: 'Friend removed.' });
+  } catch (err) {
+    console.error('Remove friend error:', err);
+    res.status(500).json({ error: 'Failed to remove friend.' });
   }
-);
+});
 
 module.exports = router;
-

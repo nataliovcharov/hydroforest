@@ -5,6 +5,8 @@ import { useSession } from "../lib/session";
 import { AuthScreen, Field, SubmitButton } from "../components/AuthScreen";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Same rule as the backend (routes/auth.js).
+const USERNAME = /^[a-zA-Z0-9_.-]{3,32}$/;
 
 export default function Signup() {
   const { login } = useSession();
@@ -14,8 +16,8 @@ export default function Signup() {
 
   const update = (event) => setForm({ ...form, [event.target.name]: event.target.value });
 
-  const problem = !form.username.trim()
-    ? "Choose a username."
+  const problem = !USERNAME.test(form.username.trim())
+    ? "Usernames are 3 to 32 letters, numbers, dots, dashes or underscores."
     : !EMAIL.test(form.email.trim())
       ? "Enter a valid email address."
       : form.password.length < 6
@@ -81,7 +83,7 @@ export default function Signup() {
           />
         </div>
         <p className="footnote" style={{ margin: "-6px 4px 0" }}>
-          At least 6 characters.
+          Passwords need at least 6 characters.
         </p>
         <SubmitButton busy={busy}>Create account</SubmitButton>
       </form>

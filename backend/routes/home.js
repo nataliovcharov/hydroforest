@@ -75,7 +75,8 @@ router.post(
   '/log-water',
   passport.authenticate('jwt', { session: false }),
   [
-    body('amount').isFloat({ min: 1 }).withMessage('Amount must be positive')
+    // Upper limit stops one request from logging an absurd amount.
+    body('amount').isFloat({ min: 1, max: 5000 }).withMessage('Amount must be between 1 and 5000 ml')
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -141,7 +142,7 @@ router.post(
   '/select-tree',
   passport.authenticate('jwt', { session: false }),
   [
-    body('selectedTree').notEmpty().withMessage('Tree name is required')
+    body('selectedTree').isString().trim().notEmpty().withMessage('Tree name is required')
   ],
   async (req, res) => {
     const errors = validationResult(req);

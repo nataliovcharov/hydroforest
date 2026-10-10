@@ -1,6 +1,5 @@
-// back-end/middleware/auth.js
+// Checks the "Authorization: Bearer <token>" header and puts the token's payload on req.user.
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const auth = (req, res, next) => {
   const token = req.header('Authorization')?.split(' ')[1];
@@ -9,10 +8,9 @@ const auth = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     next();
-  } catch (err) {
+  } catch {
     return res.status(401).json({ success: false, message: 'Invalid token.' });
   }
 };

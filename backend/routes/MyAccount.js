@@ -41,22 +41,36 @@ router.get("/account", passport.authenticate("jwt", { session: false }), async (
 });
 
 // TOGGLE NOTIFICATIONS
-router.post("/account/notifications", passport.authenticate("jwt", { session: false }), async (req, res) => {
-  try {
-    const { notificationsEnabled } = req.body;
-
-    if (notificationsEnabled === undefined) {
-      return res.status(400).json({ success: false, message: "Missing 'notificationsEnabled' field" });
+router.post(
+  "/account/notifications",
+  passport.authenticate("jwt", { session: false }),
+  [
+    check("notificationsEnabled")
+      .exists()
+      .withMessage("Missing 'notificationsEnabled' field")
+      .bail()
+      .isBoolean({ strict: true })
+      .withMessage("'notificationsEnabled' must be true or false"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, message: errors.array()[0].msg });
     }
 
-    await User.findByIdAndUpdate(req.user.id, { $set: { notificationsEnabled } });
-
-    res.json({ success: true, message: `Notifications ${notificationsEnabled ? "enabled" : "disabled"} successfully!` });
-  } catch (error) {
-    console.error("Error updating notifications:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    try {
+      const { notificationsEnabled } = req.body;
+      await User.updateOne({ _id: req.user.id }, { $set: { notificationsEnabled } });
+      res.json({
+        success: true,
+        message: `Notifications ${notificationsEnabled ? "enabled" : "disabled"} successfully!`,
+      });
+    } catch (error) {
+      console.error("Error updating notifications:", error);
+      res.status(500).json({ success: false, message: "Internal server error" });
+    }
   }
-});
+);
 
 module.exports = router;
 
