@@ -1,0 +1,94 @@
+/*
+ * Design tokens. Every color, radius, shadow and font size used by the app
+ * comes from here, so the whole look can be tuned in one place.
+ */
+:root {
+  /* Brand */
+  --green-50: #eef8f0;
+  --green-200: #c6ecc9;
+  --green-300: #a3da8d;
+  --green-400: #7cc08e;
+  --green-500: #5da271;
+  --green-600: #4a8a5d;
+  --green-700: #356d47;
+  --green-800: #234d32;
+  --soil: #5c4033;
+  --water: #36a3f2;
+  --water-light: #8fd8ff;
+  --sun: #ffe27a;
+  --danger: #ff6b5e;
+  --gold: #ffd257;
+  --silver: #dfe6ea;
+  --bronze: #e9a36b;
+
+  /* Page */
+  --bg: linear-gradient(180deg, #6db383 0%, #5da271 38%, #4d8f61 100%);
+  --bg-auth: linear-gradient(180deg, #6db383 0%, #5da271 30%, #4e7a52 62%, #5c4033 100%);
+  --bg-solid: #5da271;
+
+  /* Text on the green page */
+  --text: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.78);
+  --text-tertiary: rgba(255, 255, 255, 0.56);
+
+  /* Frosted glass surfaces */
+  --glass: rgba(255, 255, 255, 0.16);
+  --glass-strong: rgba(255, 255, 255, 0.24);
+  --glass-border: rgba(255, 255, 255, 0.24);
+  --glass-pressed: rgba(255, 255, 255, 0.28);
+  --separator: rgba(255, 255, 255, 0.18);
+  --blur: saturate(180%) blur(20px);
+
+  /* Light surfaces (inputs, primary buttons) */
+  --surface: rgba(255, 255, 255, 0.94);
+  --surface-text: #1c2a21;
+  --surface-placeholder: #7a8a7f;
+
+  /* Bars */
+  --bar: rgba(35, 77, 50, 0.55);
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+  --shadow: 0 8px 30px rgba(20, 50, 30, 0.18);
+  --shadow-sm: 0 2px 10px rgba(20, 50, 30, 0.12);
+
+  /* Type */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, var(--font);
+  --text-large-title: 34px;
+  --text-title: 22px;
+  --text-headline: 17px;
+  --text-body: 17px;
+  --text-subhead: 15px;
+  --text-footnote: 13px;
+  --text-caption: 12px;
+
+  /* Layout */
+  --page-width: 520px;
+  --gutter: 20px;
+  --tabbar-height: 64px;
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Dark mode: same layout, a deep forest at night. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: linear-gradient(180deg, #1c3a27 0%, #142c1d 45%, #0d1f14 100%);
+    --bg-auth: linear-gradient(180deg, #1c3a27 0%, #142c1d 45%, #2a1e17 100%);
+    --bg-solid: #142c1d;
+    --glass: rgba(255, 255, 255, 0.08);
+    --glass-strong: rgba(255, 255, 255, 0.13);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-pressed: rgba(255, 255, 255, 0.18);
+    --separator: rgba(255, 255, 255, 0.1);
+    --surface: rgba(255, 255, 255, 0.1);
+    --surface-text: #ffffff;
+    --surface-placeholder: rgba(255, 255, 255, 0.45);
+    --bar: rgba(10, 24, 15, 0.65);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  }
+}

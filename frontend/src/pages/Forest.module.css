@@ -1,0 +1,110 @@
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.statValue {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* Isometric garden from the original design, sized to fit any phone. */
+.stage {
+  --tile: min(64px, calc((100vw - 2 * var(--gutter)) / 7.6));
+  display: grid;
+  place-items: center;
+  height: calc(var(--tile) * 6.6);
+  margin: 12px 0 4px;
+  perspective: 1200px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, var(--tile));
+  grid-template-rows: repeat(5, var(--tile));
+  gap: 4px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2b7050, #1f5a40);
+  box-shadow: 0 24px 40px rgba(20, 40, 25, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: rotateX(55deg) rotateZ(45deg);
+  transform-style: preserve-3d;
+}
+
+.tile {
+  position: relative;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #b6e59f, #79ae74);
+  box-shadow: inset 0 -3px 5px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transform-style: preserve-3d;
+}
+
+.occupied {
+  background: linear-gradient(135deg, #a7dc8d, #6da667);
+}
+
+/* Each plant stands upright on its tile, facing the viewer. */
+.plant {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: var(--tile);
+  height: calc(var(--tile) * 1.8);
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-origin: bottom center;
+  transform: translateX(-50%) rotateZ(-45deg) rotateX(-55deg);
+  cursor: pointer;
+}
+
+.plant img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.25));
+  transition: transform 0.25s var(--ease);
+  transform-origin: bottom center;
+}
+
+.plant:hover img,
+.plant:focus-visible img {
+  transform: scale(1.12);
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.empty :global(.btn) {
+  margin-top: 6px;
+}
+
+.detail {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+}
+
+.detailPot {
+  display: grid;
+  place-items: end center;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ccffcc 0%, #ffffc2 100%);
+  box-shadow: 0 12px 30px rgba(20, 50, 30, 0.25);
+}
+
+.detailPot img {
+  height: 160px;
+  width: auto;
+}

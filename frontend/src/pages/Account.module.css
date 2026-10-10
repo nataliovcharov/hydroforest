@@ -1,0 +1,75 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.profile .subhead {
+  overflow-wrap: anywhere;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  padding: 14px 16px;
+}
+
+.statIcon {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.units {
+  min-width: 160px;
+}
+
+.logout {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: light) {
+  .logout {
+    color: #fff;
+  }
+}
+
+.steps {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 8px;
+  list-style: none;
+}
+
+.steps li {
+  display: flex;
+  gap: 14px;
+}
+
+.steps li > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--green-700);
+  font-weight: 700;
+}
+
+.steps .subhead {
+  margin-top: 2px;
+}

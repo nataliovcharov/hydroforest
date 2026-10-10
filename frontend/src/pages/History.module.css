@@ -1,0 +1,111 @@
+.monthBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.monthNav {
+  display: flex;
+  gap: 4px;
+}
+
+.monthNav button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--glass-strong);
+  color: var(--text);
+}
+
+.monthNav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px 0;
+}
+
+.weekday {
+  padding-bottom: 6px;
+  font-size: var(--text-caption);
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--text);
+}
+
+.day > div {
+  width: 88% !important;
+}
+
+.dayNumber {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.day:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+}
+
+.day:disabled > div {
+  opacity: 0.4;
+}
+
+.today .dayNumber {
+  color: var(--sun);
+}
+
+.selected {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.detailAmount {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.summary :global(.card--padded) {
+  padding: 14px;
+}
+
+.summaryValue {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+}

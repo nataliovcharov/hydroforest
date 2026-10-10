@@ -14,7 +14,7 @@ Built as a team project for the Agile Software Development course at New York Un
 
 ## Built with
 
-- **Frontend:** React, React Router, Framer Motion, Vite
+- **Frontend:** React, React Router, Framer Motion, Vite, CSS Modules, ESLint
 - **Backend:** Node.js, Express, MongoDB with Mongoose, Passport with JWT, express-validator
 - **Testing:** Mocha, Chai and c8 for coverage
 - **Deployment:** Docker
@@ -47,6 +47,18 @@ npm run dev            # http://localhost:3000, /api requests go to the backend
 cd backend
 npm test               # runs against the database in .env, so use a test database
 ```
+
+## Improvements after the course
+
+Work I (Natalie Ovcarov) did after the course ended, on top of the team's original app.
+
+**Frontend redesign**
+- Rebuilt the interface in an iOS-inspired style that keeps the original look: a green, frosted-glass design system with shared design tokens, light and dark mode, and a bottom tab bar.
+- Today screen: a progress ring around the growing tree, quick-add buttons, a custom amount sheet and a unit choice (cups, oz, ml) that is remembered.
+- History: a custom calendar that shows each day's progress as a small ring, plus monthly stats.
+- Replaced 14 copy-pasted pages with shared components (layout, tab bar, sheets, form fields) and one API client that handles login tokens and errors in one place.
+- Fixed bugs: protected pages now redirect to login and back, a wrong current password no longer logs you out, errors show inline instead of browser alerts, friend search escapes input and hides existing friends, and the app no longer loads images from external sites.
+- Accessibility: real links and buttons, keyboard-friendly sheets, labelled form fields and support for "Reduce motion".
 
 ## About this repo
 

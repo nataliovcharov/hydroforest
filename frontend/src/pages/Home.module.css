@@ -1,0 +1,305 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ringWrap {
+  position: relative;
+  width: min(280px, 76vw);
+  margin: 16px 0 18px;
+  display: grid;
+  place-items: center;
+}
+
+/* The pastel circle from the original design, now inside the ring. */
+.pot {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: linear-gradient(180deg, #ccffcc 0%, #ffffc2 100%);
+  box-shadow: inset 0 -10px 30px rgba(92, 64, 51, 0.12), 0 10px 30px rgba(20, 50, 30, 0.18);
+}
+
+.tree {
+  height: 86%;
+  width: auto;
+  margin-bottom: 4%;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 6px 8px rgba(40, 60, 30, 0.2));
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.drop {
+  position: absolute;
+  top: 18%;
+  left: calc(50% - 17px);
+  color: var(--water);
+  filter: drop-shadow(0 4px 6px rgba(54, 163, 242, 0.4));
+  pointer-events: none;
+}
+
+.amount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.amountValue {
+  font-size: 54px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.amountGoal {
+  font-size: var(--text-title);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.stage {
+  margin-top: 8px;
+  font-size: var(--text-subhead);
+  color: var(--text-secondary);
+}
+
+.stage strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.flame {
+  color: #ffb44d;
+}
+
+.pillTree {
+  width: 20px;
+  height: 26px;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+.logCard {
+  margin-top: 28px;
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.units {
+  min-width: 170px;
+}
+
+.presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.preset {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 96px;
+  padding: 14px 6px 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(143, 216, 255, 0.3), rgba(54, 163, 242, 0.3));
+  box-shadow: inset 0 0 0 1px rgba(143, 216, 255, 0.45);
+  color: var(--text);
+  transition: transform 0.15s var(--ease), background-color 0.2s;
+}
+
+.preset:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.preset:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.presetIcon {
+  color: #bfe9ff;
+}
+
+.presetAmount {
+  font-size: var(--text-subhead);
+  font-weight: 600;
+}
+
+.logCard :global(.btn--plain) {
+  margin-top: 8px;
+  color: var(--text-secondary);
+}
+
+/* Tree picker */
+.treeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.treeOption {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 6px 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+  color: var(--text);
+}
+
+.treeOption:disabled:not(.treeSelected) {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.treeSelected {
+  cursor: default;
+  box-shadow: inset 0 0 0 2px #fff;
+  background: var(--glass-strong);
+}
+
+.treeThumb {
+  display: grid;
+  place-items: end center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ccffcc 0%, #ffffc2 100%);
+}
+
+.treeThumb img {
+  height: 64px;
+  width: auto;
+}
+
+.treeName {
+  font-size: var(--text-footnote);
+  font-weight: 600;
+}
+
+.treeCheck {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--green-700);
+}
+
+/* Custom amount */
+.customField {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 0 8px;
+}
+
+.customInput {
+  width: 3.2ch;
+  field-sizing: content;
+  min-width: 1.2ch;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 64px;
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.customInput::-webkit-outer-spin-button,
+.customInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.customInput:focus-visible {
+  outline: none;
+}
+
+.customField:focus-within {
+  box-shadow: 0 2px 0 var(--water-light);
+}
+
+.customInput::placeholder {
+  color: var(--text-tertiary);
+}
+
+.customUnit {
+  font-size: var(--text-title);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Unlock celebration */
+.unlock {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.unlockPot {
+  display: grid;
+  place-items: end center;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ccffcc 0%, #ffffc2 100%);
+  box-shadow: 0 0 0 10px rgba(255, 226, 122, 0.3), 0 12px 30px rgba(20, 50, 30, 0.25);
+}
+
+.unlockPot img {
+  height: 140px;
+  width: auto;
+}
+
+.unlock :global(.btn) {
+  margin-top: 12px;
+}

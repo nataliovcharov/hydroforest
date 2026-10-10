@@ -1,0 +1,48 @@
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bar);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border-top: 1px solid var(--separator);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: var(--page-width);
+  height: var(--tabbar-height);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.tab:active {
+  transform: scale(0.94);
+}
+
+.active {
+  color: #fff;
+}
+
+.active svg path:first-child {
+  fill: rgba(255, 255, 255, 0.22);
+}
