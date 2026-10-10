@@ -12,4 +12,4 @@ COPY . .
 ENV PORT=5005
 EXPOSE 5005
 
-CMD ["node", "app.js"]
+CMD ["node", "server.js"]

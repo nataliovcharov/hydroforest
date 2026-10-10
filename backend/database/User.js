@@ -8,7 +8,8 @@ const hydrationEntrySchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  // Never returned by queries unless asked for with .select('+password').
+  password: { type: String, required: true, select: false },
   email: { type: String, required: true, unique: true },
   hydrationData: [hydrationEntrySchema],
   hasUnlockedTree: { type: Boolean, default: false },
