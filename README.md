@@ -4,6 +4,11 @@ HydroForest is a water-tracking web app that turns staying hydrated into a game.
 
 Built as a team project for the Agile Software Development course at New York University (Spring 2025).
 
+<p align="center">
+  <img src="docs/demo.gif" width="300" alt="Logging water in HydroForest until a sunflower is fully grown">
+</p>
+<p align="center"><sub>Logging water until the sunflower is fully grown, then planting it in the forest.</sub></p>
+
 ## Team
 
 - [Jun Li](https://github.com/jljune9li)
